@@ -1,9 +1,8 @@
-from app.Workflows.joke_workflow import get_workflow
+from app.api.simple_api import agent_app
 from app.Models.gigachat_model import get_model
 from app.Nodes.joke_nodes import get_edges, get_nodes
 from app.States.joke_state import State
-from app.api.simple_api import agent_app
-
+from app.Workflows.joke_workflow import get_workflow
 
 llm = get_model()
 optimizer_builder = get_workflow(llm, get_nodes, get_edges, State)
@@ -22,6 +21,3 @@ print(state["feedback"]) """
 def generate(topic: str):
     response = optimizer_workflow.invoke({"topic": topic})
     return {"response": response["joke"]}
-
-
-

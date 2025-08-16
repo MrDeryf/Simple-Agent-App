@@ -1,18 +1,21 @@
-from langgraph.graph import StateGraph, START, END
+from typing import Callable, Mapping
+
 from langchain_core.language_models import BaseChatModel
-from typing_extensions import Literal
+from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
-from typing import Mapping, Callable
+from typing_extensions import Literal
 
 
-def get_workflow(llm: BaseChatModel,
-                get_nodes,
-                get_edges: Callable[[None], list[str]],
-                State: Mapping[str, object]) -> StateGraph:
-    
+def get_workflow(
+    llm: BaseChatModel,
+    get_nodes,
+    get_edges: Callable[[None], list[str]],
+    State: Mapping[str, object],
+) -> StateGraph:
     # Schema for structured output to use in evaluation
     class Feedback(BaseModel):
         """Gives a rating and feedback"""
+
         grade: Literal["funny", "not funny"] = Field(
             description="Decide if the joke is funny or not."
         )
@@ -21,7 +24,6 @@ def get_workflow(llm: BaseChatModel,
         )
 
     evaluator = llm.with_structured_output(Feedback)
-
 
     # Build workflow
     optimizer_builder = StateGraph(State)
@@ -38,12 +40,12 @@ def get_workflow(llm: BaseChatModel,
     optimizer_builder.add_edge(START, "llm_call_generator")
     optimizer_builder.add_edge("llm_call_generator", "llm_call_evaluator")
     optimizer_builder.add_conditional_edges(
-    "llm_call_evaluator",
-    route_joke,
-    {  # Name returned by route_joke : Name of next node to visit
-        "Accepted": END,
-        "Rejected + Feedback": "llm_call_generator",
-    },
+        "llm_call_evaluator",
+        route_joke,
+        {  # Name returned by route_joke : Name of next node to visit
+            "Accepted": END,
+            "Rejected + Feedback": "llm_call_generator",
+        },
     )
 
     return optimizer_builder
