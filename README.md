@@ -1,0 +1,1 @@
+A simple agent app that generates joke on a given theme, judges whether it's fun or not, and generates a new one accodring to the feedback (if needed).
