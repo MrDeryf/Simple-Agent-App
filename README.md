@@ -28,6 +28,7 @@ The agent uses a **refine-and-evaluate loop** implemented as a stateful graph us
 
 ## 📁 App structure
 
+```text
 ├── app/
 │   ├── api/            # FastAPI endpoints
 │   ├── models/         # LLM wrapper
@@ -37,6 +38,7 @@ The agent uses a **refine-and-evaluate loop** implemented as a stateful graph us
 ├── main.py             # Entry point for the FastAPI app
 ├── pyproject.toml      # Dependencies and project metadata
 └── .env.example        # Environment variable template
+```
 
 ## 🛠️ Technologies Used
 
